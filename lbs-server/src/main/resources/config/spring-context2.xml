@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation=" 
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd 
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+            <!--  -->
+	<bean id="channelInitialHandler" class="com.lbs.nettyserver.handler.ChannelInitialHandler"
+		init-method="init">
+		<property name="timeout" value="${app.channel.readtimeout}" />
+		<property name="handlerDispatcher" ref="handlerDispatcher" />
+
+	</bean>
+
+	<bean id="handlerDispatcher" class="com.lbs.nettyserver.dispatcher.HandlerDispatcher">
+		<property name="handlerExecutor">
+			<bean class="com.lbs.nettyserver.threadpool.FiexThreadPoolExecutor"
+				destroy-method="shutdown">
+				<constructor-arg value="${app.handler.pool.corePoolSize}" />
+				<constructor-arg value="${app.handler.pool.maximumPoolSize}" />
+				<constructor-arg value="${app.handler.pool.keepAliveSecond}" />
+				<constructor-arg value="${app.handler.pool.name}" />
+			</bean>
+		</property>
+		<property name="sleepTime" value="${app.handler.sleepTime}" />
+	</bean>
+
+</beans>
